@@ -18,19 +18,22 @@ import com.demia.sdk.core.AbstractRestClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MediaEntityClient extends AbstractRestClient {
-    
+
     Logger logger = LogManager.getLogManager().getLogger(MediaEntityClient.class.getName());
-    
+
+    private final String ASSETS_URI = "/assets";
+    private final String ASSET_URI = "/asset";
+
     ObjectMapper mapper = new ObjectMapper();
-    
+
     public MediaEntity createMediaEntity(MediaEntity entity, String localFilePath) {
-        String url = getUrl("/assets");
+        String url = getUrl(ASSETS_URI);
         MultiValueMap<String, Object> bodyMap = new LinkedMultiValueMap<>();
         bodyMap.add("file", getFileResource(localFilePath));
 
-        try{
+        try {
             bodyMap.add("asset", mapper.writeValueAsString(entity));
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.log(Level.SEVERE, "Unable to serialize provided object", e);
         }
 
@@ -39,38 +42,66 @@ public class MediaEntityClient extends AbstractRestClient {
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(bodyMap, headers);
 
         ResponseEntity<MediaEntity> response = restTemplate.postForEntity(url, requestEntity, MediaEntity.class);
-        
-        if(response.getStatusCode()==HttpStatus.CREATED) {
+
+        if (response.getStatusCode() == HttpStatus.CREATED) {
             return response.getBody();
-        } else{
-            throw new RuntimeException("Unable to create entity");
+        } else {
+            throw new RuntimeException("Unable to create entity: " + response.getBody().toString());
         }
     }
-    
+
     private FileSystemResource getFileResource(String file) {
         FileSystemResource resource = new FileSystemResource(file);
         return resource;
     }
 
-    public MediaEntities getMediaEntity(String assetId){
-        return null;
+    public MediaEntity getMediaEntity(String assetId) {
+        String url = getUrl(ASSET_URI);
+        url = url + "/" + assetId;
+
+        ResponseEntity<MediaEntity> responseEntity = restTemplate.getForEntity(url, MediaEntity.class);
+
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+            return responseEntity.getBody();
+        } else {
+            return null;
+        }
+    }
+
+    public MediaEntities getMediaEntities(int start, int size, SortElement element, Order order) {
+        String url = getUrl(ASSETS_URI);
+        StringBuilder urlBuilder = new StringBuilder(url).append("?start=").append(Integer.toString(start))
+                .append("&size=").append(Integer.toString((size == 0 ? 10 : size)));
+
+        if (element != null)
+            urlBuilder.append("&sortOn=").append(element.getSortElement());
+
+        if (order != null)
+            urlBuilder.append("&order=").append(order.getOrder());
+
+        ResponseEntity<MediaEntities> entities = restTemplate.getForEntity(urlBuilder.toString(), MediaEntities.class);
+        if (entities.getStatusCode() == HttpStatus.OK) {
+            return entities.getBody();
+        } else {
+            throw new RuntimeException("Unable to retrieve entities: " + entities.getBody().toString());
+        }
+
     }
     
-    public List<MediaEntities> getAllMediaEntities(){
-        String url = getUrl("/assets");
-        return null;
-    }
     
-    private String getUrl(String uriBase){
+    public void deleteMediaEntity(String assetId){
+        String url = getUrl(ASSET_URI);
+        url = url + "/" + assetId;
+        restTemplate.delete(url);
+        
+    }
+
+    private String getUrl(String uriBase) {
         String hostUrl = System.getProperty("host.asset");
         hostUrl = validateFormat(hostUrl);
         hostUrl = new StringBuffer(hostUrl).append(uriBase).toString();
         return hostUrl;
-        
-    }
-    
-    
-    
 
+    }
 
 }

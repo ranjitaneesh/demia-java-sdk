@@ -41,4 +41,12 @@ public class MediaEntities {
         this.totalPages = totalPages;
     }
 
+    @Override
+    public String toString() {
+        return "MediaEntities [assets=" + assets + ", totalEntitiesAvailable=" + totalEntitiesAvailable
+                + ", currentPage=" + currentPage + ", totalPages=" + totalPages + "]";
+    }
+    
+    
+
 }
