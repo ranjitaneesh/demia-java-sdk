@@ -20,11 +20,12 @@ public class AuthenticationClient extends AbstractRestClient {
     // TODO Till we don't have this lets lets populate externally the host
     // values
     // private final String HOST = "https://api.demia.com";
-    private String HOST = System.getProperty("host");
+    private String HOST = System.getProperty("host.identity");
 
-    private String token;
+    
 
-    public String authenticate(String username, String password) {
+    public boolean authenticate(String username, String password) {
+        boolean authenticated = false;
         String hosturl = validateFormat(HOST);
         String authenticationUrl = new StringBuffer().append(hosturl).append("/authenticate?username=").append(username)
                 .append("&password=").append(password).toString();
@@ -33,9 +34,10 @@ public class AuthenticationClient extends AbstractRestClient {
 
             ResponseEntity<String> response = restTemplate.getForEntity(new URI(authenticationUrl), String.class);
             String responseString = response.getBody();
-            if (response.getStatusCode() == HttpStatus.OK)
-                token = responseString;
-            else
+            if (response.getStatusCode() == HttpStatus.OK){
+                TokenHolder.setToken(responseString);
+                authenticated = true;
+            } else
                 throw new RuntimeException(
                         "Authenetication failed, received message: " + (responseString == null ? "" : responseString));
 
@@ -43,24 +45,14 @@ public class AuthenticationClient extends AbstractRestClient {
             logger.log(Level.SEVERE, "Error Authenticating", e);
         }
 
-        return token;
+        return authenticated;
     }
 
-    private String validateFormat(String host) {
-        if (host == null || host.isEmpty())
-            throw new RuntimeException("Unable to find host");
-
-        if (host.startsWith("http://") || host.startsWith("https://")) {
-            return host;
-        } else
-            throw new RuntimeException("Please check if the host contains 'http://' or 'https://' ");
-
-    }
-
-    public String authenticate() {
+    public boolean authenticate() {
         String userName = System.getProperty(USERNAME);
         String password = System.getProperty(PASSWORD);
 
         return authenticate(userName, password);
     }
+    
 }
