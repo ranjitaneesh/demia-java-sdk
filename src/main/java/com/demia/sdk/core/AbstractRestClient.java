@@ -3,11 +3,14 @@ package com.demia.sdk.core;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.converter.ResourceHttpMessageConverter;
+import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 public abstract class AbstractRestClient {
@@ -19,6 +22,10 @@ public abstract class AbstractRestClient {
 
         restTemplate = new RestTemplate();
 
+        //remove ResourceHttpMessageConverter that has streaming set to false with the default which has implicitly set to true
+        restTemplate.getMessageConverters().removeIf(f->f.getClass().getName().equals(ResourceHttpMessageConverter.class.getName()));
+        restTemplate.getMessageConverters().add(new ResourceHttpMessageConverter());
+        
         ClientHttpRequestInterceptor interceptor = new ClientHttpRequestInterceptor() {
 
             @Override
@@ -36,6 +43,23 @@ public abstract class AbstractRestClient {
         };
 
         restTemplate.setInterceptors(Arrays.asList(new ClientHttpRequestInterceptor[] { interceptor }));
+        
+        restTemplate.setErrorHandler(new ResponseErrorHandler() {
+            
+            @Override
+            public boolean hasError(ClientHttpResponse response) throws IOException {
+                if(response.getRawStatusCode()>=400)
+                    return true;
+                
+                return false;
+            }
+            
+            @Override
+            public void handleError(ClientHttpResponse response) throws IOException {
+                IOUtils.copy(response.getBody(), System.out);
+                
+            }
+        });
     }
 
     private boolean isAuthenticationRequest(HttpRequest request) {
