@@ -1,15 +1,21 @@
 package com.demia.sdk.media.metadata;
 
-import java.util.List;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -23,6 +29,7 @@ public class MediaEntityClient extends AbstractRestClient {
 
     private final String ASSETS_URI = "/assets";
     private final String ASSET_URI = "/asset";
+    private final String RENDITION_URI = "/rendition";
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -87,13 +94,30 @@ public class MediaEntityClient extends AbstractRestClient {
         }
 
     }
-    
-    
-    public void deleteMediaEntity(String assetId){
+
+    public void deleteMediaEntity(String assetId) {
         String url = getUrl(ASSET_URI);
         url = url + "/" + assetId;
         restTemplate.delete(url);
+
+    }
+
+    public void performAnOperationAndGetImage(String renditionId, Command command, OutputStream out) throws Exception {
+        String url = getUrl(RENDITION_URI);
+        StringBuilder builder = new StringBuilder(url);
+        builder.append("/").append(renditionId).append("/manipulate?").append(command.getUrlParameters());
+        url = builder.toString();
         
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE + ", " + MediaType.IMAGE_PNG_VALUE);
+        RequestEntity<String> req = new RequestEntity<>(headers, HttpMethod.GET, new URI(url));
+        ResponseEntity<Resource> respStream = restTemplate.exchange(req, Resource.class);
+        
+        if (respStream.getStatusCode() == HttpStatus.OK) {
+            InputStream in = respStream.getBody().getInputStream();
+            IOUtils.copy(in, out);
+        }
+
     }
 
     private String getUrl(String uriBase) {
