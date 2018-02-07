@@ -16,7 +16,7 @@ public class ConvertCommand implements Command {
 
     @Override
     public String getUrlParameters() {
-        return "op=" + OPERATION + "&type=" + type;
+        return OP + OPERATION + "&type=" + type;
     }
 
 }

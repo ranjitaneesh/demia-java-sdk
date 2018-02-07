@@ -18,7 +18,7 @@ public class CropCommand implements Command {
     public String getUrlParameters() {
         StringBuilder builder = new StringBuilder();
         
-        builder.append("op=").append(OPERATION).append("&topLeftWidthOffset=").append(topLeftHeightOffset)
+        builder.append(OP).append(OPERATION).append("&topLeftWidthOffset=").append(topLeftHeightOffset)
                 .append("&topLeftHeightOffset=").append(topLeftWidthOffset).append("&w=").append(width).append("&h=")
                 .append(height);
         

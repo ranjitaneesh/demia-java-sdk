@@ -6,6 +6,6 @@ public class IdentifyCommand implements Command {
  
     @Override
     public String getUrlParameters() {
-        return OPERATION;
+        return OP + OPERATION;
     }
 }

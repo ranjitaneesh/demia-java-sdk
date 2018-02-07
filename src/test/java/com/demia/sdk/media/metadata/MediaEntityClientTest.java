@@ -100,21 +100,23 @@ public class MediaEntityClientTest {
         String tempLocation = System.getProperty("java.io.tmpdir");
         
         String orig_rend_id = entity.getRevisions().get(0).getRenditions().get(0).getRenditionId();
-        ResizeCommand command = new ResizeCommand();
-        command.setHeight(100);
-        command.setWidth(100);
-        command.setMaintainAr(true);
+//        ResizeCommand command = new ResizeCommand();
+//        command.setHeight(100);
+//        command.setWidth(100);
+//        command.setMaintainAr(true);
+            
+        FlopCommand command = new FlopCommand();
         
         File f = new File(tempLocation + "\\"+orig_rend_id+".png");
         FileOutputStream fos = new FileOutputStream(f);
         mediaEntityClient.performAnOperationAndGetImage(orig_rend_id, command, fos);
         fos.close();
         assertTrue(f.length()>0);
-        f.delete();
+//        f.delete();
         
         //Delete
-        mediaEntityClient.deleteMediaEntity(entity.getAssetId());
-        entityRetrieved = mediaEntityClient.getMediaEntity(entity.getAssetId());
+//        mediaEntityClient.deleteMediaEntity(entity.getAssetId());
+//        entityRetrieved = mediaEntityClient.getMediaEntity(entity.getAssetId());
         
     }
 

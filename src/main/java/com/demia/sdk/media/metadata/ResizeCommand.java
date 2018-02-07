@@ -43,7 +43,7 @@ public class ResizeCommand implements Command {
 
     @Override
     public String getUrlParameters() {
-        StringBuilder builder = new StringBuilder("op=");
+        StringBuilder builder = new StringBuilder(OP);
         builder.append(OPERATION).append("&w=").append(width).append("&h=").append(height).append("&maintainAspect=")
                 .append(maintainAr);
 

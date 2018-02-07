@@ -6,6 +6,6 @@ public class FlopCommand implements Command {
     
     @Override
     public String getUrlParameters() {
-        return OPERATION;
+        return OP + OPERATION;
     }
 }

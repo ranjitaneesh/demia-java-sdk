@@ -15,7 +15,7 @@ public class RotateCommand implements Command {
 
     @Override
     public String getUrlParameters() {
-        return "op=" + OPERATION + "&angle=" + angle;
+        return OP + OPERATION + "&angle=" + angle;
     }
 
 }
