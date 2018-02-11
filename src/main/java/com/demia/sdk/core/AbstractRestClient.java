@@ -7,8 +7,10 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
@@ -25,6 +27,12 @@ public abstract class AbstractRestClient {
         //remove ResourceHttpMessageConverter that has streaming set to false with the default which has implicitly set to true
         restTemplate.getMessageConverters().removeIf(f->f.getClass().getName().equals(ResourceHttpMessageConverter.class.getName()));
         restTemplate.getMessageConverters().add(new ResourceHttpMessageConverter());
+        
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setBufferRequestBody(false);//Not to buffer request body, will help when sending large content 
+        requestFactory.setOutputStreaming(false);
+        
+        restTemplate.setRequestFactory(requestFactory);
         
         ClientHttpRequestInterceptor interceptor = new ClientHttpRequestInterceptor() {
 
