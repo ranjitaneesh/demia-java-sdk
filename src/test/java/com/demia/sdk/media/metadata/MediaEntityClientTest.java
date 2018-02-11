@@ -5,8 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -119,10 +117,10 @@ public class MediaEntityClientTest {
 
     }
 
-    @Test
+    //@Test
     public void test6GetMediaEntity() throws Exception {
         authenticationClient.authenticate();
-        for (int i = 0; i < 300; i++) {
+        for (int i = 0; i < 10; i++) {
             // Create
             MediaEntity entity = new MediaEntity();
             entity.setName("Test " +i);
