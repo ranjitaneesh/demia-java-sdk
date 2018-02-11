@@ -7,10 +7,10 @@ This SDK is avialable to be freely downloaded and used to accces the demia ReST 
 The pre-requisite to using this sdk is to have an account with demia and generate a username and password.
 To run the sdk against your account on demia you will need the following information as part of your jvm arguments:
 
- -Dhost.identity="identity server url>"
- -Dhost.asset="<asset server url>"
- -Dusername="<userid>"
- -Dpassword="<password>"
+ -Dhost.identity="identity server url"<br/>
+ -Dhost.asset="asset server url"<br/>
+ -Dusername="userid"<br/>
+ -Dpassword="password"<br/>
 
 All merge requests should be made to the develop branch.
 
