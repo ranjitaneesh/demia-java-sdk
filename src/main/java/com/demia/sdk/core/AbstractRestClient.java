@@ -43,6 +43,7 @@ public abstract class AbstractRestClient {
                     
                     HttpHeaders headers = request.getHeaders();
                     headers.set(HttpHeaders.AUTHORIZATION, HttpHeaders.AUTHORIZATION + ": " + TokenHolder.getToken());
+                    headers.set("channel", "java-sdk");
                 }
 
                 return execution.execute(request, body);

@@ -3,6 +3,7 @@ package com.demia.sdk.media.metadata;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -21,9 +22,12 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.demia.sdk.core.AbstractRestClient;
+import com.demia.sdk.media.MediaOperations;
+import com.demia.sdk.media.Rendition;
+import com.demia.sdk.media.Revison;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class MediaEntityClient extends AbstractRestClient {
+public class MediaEntityClient extends AbstractRestClient implements MediaOperations {
 
     Logger logger = LogManager.getLogManager().getLogger(MediaEntityClient.class.getName());
 
@@ -33,6 +37,7 @@ public class MediaEntityClient extends AbstractRestClient {
 
     ObjectMapper mapper = new ObjectMapper();
 
+    @Override
     public MediaEntity createMediaEntity(MediaEntity entity, String localFilePath) {
         String url = getUrl(ASSETS_URI);
         MultiValueMap<String, Object> bodyMap = new LinkedMultiValueMap<>();
@@ -62,6 +67,7 @@ public class MediaEntityClient extends AbstractRestClient {
         return resource;
     }
 
+    @Override
     public MediaEntity getMediaEntity(String assetId) {
         String url = getUrl(ASSET_URI);
         url = url + "/" + assetId;
@@ -74,7 +80,9 @@ public class MediaEntityClient extends AbstractRestClient {
             return null;
         }
     }
-
+    
+    
+    @Override
     public MediaEntities getMediaEntities(int start, int size, SortElement element, Order order) {
         String url = getUrl(ASSETS_URI);
         StringBuilder urlBuilder = new StringBuilder(url).append("?start=").append(Integer.toString(start))
@@ -95,6 +103,7 @@ public class MediaEntityClient extends AbstractRestClient {
 
     }
 
+    @Override
     public void deleteMediaEntity(String assetId) {
         String url = getUrl(ASSET_URI);
         url = url + "/" + assetId;
@@ -102,7 +111,8 @@ public class MediaEntityClient extends AbstractRestClient {
 
     }
 
-    public void performAnOperationAndGetImage(String renditionId, Command command, OutputStream out) throws Exception {
+    @Override
+    public void performSingleOperationAndGetImage(String renditionId, Command command, OutputStream out) throws Exception {
         String url = getUrl(RENDITION_URI);
         StringBuilder builder = new StringBuilder(url);
         builder.append("/").append(renditionId).append("/manipulate?").append(command.getUrlParameters());
@@ -119,6 +129,13 @@ public class MediaEntityClient extends AbstractRestClient {
         }
 
     }
+    
+    @Override
+    public void performMultipleOperationAndGetImage(String renditionId, Command command, OutputStream out)
+            throws Exception {
+        // TODO Auto-generated method stub
+        
+    }
 
     private String getUrl(String uriBase) {
         String hostUrl = System.getProperty("host.asset");
@@ -126,6 +143,102 @@ public class MediaEntityClient extends AbstractRestClient {
         hostUrl = new StringBuffer(hostUrl).append(uriBase).toString();
         return hostUrl;
 
+    }
+
+    @Override
+    public void updateMediaEntity(MediaEntity entity) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public Revison addRevisionForMediaEntity(String assetId, Revison metadata, String localFilePath) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Revison addRenditionForMediaEntity(String assetId, Rendition metadata, String localFilePath) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void retrieveRendtionMedia(String renditionId, OutputStream out) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public List<Revison> getRevisions(String assetId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Rendition> getRenditions(String revisionId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void makeRevisonCurrent(String revisionId) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void deleteRevision(String renditionId) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void deleteRendition(String renditionId) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void multipleImageOperationCreateNewRendition(String renditionId, Command command, OutputStream out) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void multipleImageOperationReplaceRendition(String renditionId, Command command, OutputStream out) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public String createFolder(String folderName, String path) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<String> getFolders() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<String> getFolders(String path) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void deleteFolder(String path) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public List<String> search(String text) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

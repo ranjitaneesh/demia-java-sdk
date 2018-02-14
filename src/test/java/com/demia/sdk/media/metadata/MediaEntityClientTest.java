@@ -105,7 +105,7 @@ public class MediaEntityClientTest {
 
         File f = new File(tempLocation + "\\" + orig_rend_id + ".png");
         FileOutputStream fos = new FileOutputStream(f);
-        mediaEntityClient.performAnOperationAndGetImage(orig_rend_id, command, fos);
+        mediaEntityClient.performSingleOperationAndGetImage(orig_rend_id, command, fos);
         fos.close();
         assertTrue(f.length() > 0);
         // f.delete();
@@ -117,10 +117,10 @@ public class MediaEntityClientTest {
 
     }
 
-    //@Test
+    @Test
     public void test6GetMediaEntity() throws Exception {
         authenticationClient.authenticate();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1; i++) {
             // Create
             MediaEntity entity = new MediaEntity();
             entity.setName("Test " +i);
