@@ -12,6 +12,7 @@ To run the sdk against your account on demia you will need the following informa
  -Dusername="userid"<br/>
  -Dpassword="password"<br/>
 
+**Want to contribute back on demia java sdk**
 All merge requests should be made to the develop branch.
 
 When providing a merge request please remember to provide the following
