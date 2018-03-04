@@ -120,7 +120,7 @@ public class MediaEntityClientTest {
     @Test
     public void test6GetMediaEntity() throws Exception {
         authenticationClient.authenticate();
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 5; i++) {
             // Create
             MediaEntity entity = new MediaEntity();
             entity.setName("Test " +i);
